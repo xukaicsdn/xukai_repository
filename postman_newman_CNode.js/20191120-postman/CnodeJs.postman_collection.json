@@ -1,0 +1,967 @@
+{
+	"info": {
+		"_postman_id": "eeb0d14c-98a6-48cf-aaee-adbcb877791b",
+		"name": "CnodeJs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "主题首页",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b2859241-16a7-4bcb-8942-bc92b2811514",
+						"exec": [
+							"//参考 js语法 http://javascript.ruanyifeng.com/",
+							" ",
+							"pm.test(\"验证码为200\",   // 我们的一个测试步骤中数据验证",
+							"    function () {",
+							"        pm.response.to.have.status(200);",
+							"    }",
+							");",
+							"",
+							"pm.test(\"data的数据长度应该为1\", function () {",
+							"    ",
+							"    var jsonData = pm.response.json();",
+							"    console.log(\"json data ==\",jsonData);",
+							"    // 获取json data的长度",
+							"    console.log(\"data length == \",jsonData[\"data\"].length);",
+							"    // 实际结果值与期望值对比",
+							"    pm.expect(jsonData[\"data\"].length).to.eql(10);",
+							"    ",
+							"});",
+							"",
+							"pm.test(\"所有的dta内容 tab值应该为share\",function(){",
+							"    // 拿到返回结果 json值",
+							"    var jsondata = pm.response.json();",
+							"    // 取json数据中的data字段值",
+							"    var data = jsondata[\"data\"];",
+							"    // data是个数组，进行for循环操作",
+							"    for(let d of data){",
+							"        console.log(\"tab ===\", d[\"tab\"])",
+							"        // 判断每个对象中的tab值应该等于share",
+							"        pm.expect(d[\"tab\"]).to.eql(\"share\")",
+							"    }",
+							"})",
+							"",
+							"// pm.test(\"Your test name\", function () {",
+							"//     var jsonData = pm.response.json();",
+							"//     pm.expect(jsonData.value).to.eql(100);",
+							"// });"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://39.107.96.138:3000/api/v1/topics?page=1&tab=share&limit=10&mdrender=false",
+					"protocol": "http",
+					"host": [
+						"39",
+						"107",
+						"96",
+						"138"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"topics"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "tab",
+							"value": "share"
+						},
+						{
+							"key": "limit",
+							"value": "10"
+						},
+						{
+							"key": "mdrender",
+							"value": "false"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "发布主题",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "160efd1c-70e8-49b4-8dba-d0aaf591ee13",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"// pm.variables.get(\"variable_key\")",
+							"",
+							"pm.test(\"发布成功\",function(){",
+							"    pm.expect(jsonData[\"success\"]).to.eql(true)",
+							"});",
+							"",
+							"//设置Topic_id",
+							"pm.variables.set(\"topic_id\",jsonData['topic_id']);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "accesstoken",
+							"value": "{{accesstoken}}",
+							"description": "{{token}}",
+							"type": "text"
+						},
+						{
+							"key": "title",
+							"value": "HelloWorld",
+							"type": "text"
+						},
+						{
+							"key": "tab",
+							"value": "ask",
+							"type": "text"
+						},
+						{
+							"key": "content",
+							"value": "HelloWorld Test",
+							"type": "text"
+						}
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://39.107.96.138:3000/api/v1/topics",
+					"protocol": "http",
+					"host": [
+						"39",
+						"107",
+						"96",
+						"138"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"topics"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "更新主题",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "07aceced-098c-432e-8ea6-f49edb0bbc70",
+						"exec": [
+							"// 期望值 topic_id",
+							"var excpet_topic_id = pm.environment.get(\"topic_id\");",
+							"",
+							"pm.test(\"topic_id的值应该与发布话题时返回的topic_id是同一个\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData[\"topic_id\"]).to.eql(excpet_topic_id);",
+							"});",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "dbfa9b5a-7787-4e55-ac70-b2fb9d2d4454",
+						"exec": [
+							"",
+							"pm.variables.set(\"title\",\"new Hello World\");",
+							"pm.variables.set(\"tab\",\"ask\");",
+							"pm.variables.set(\"content\",\"new Content\");",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "accesstoken",
+							"value": "{{accesstoken}}",
+							"type": "text"
+						},
+						{
+							"key": "topic_id",
+							"value": "{{topic_id}}",
+							"type": "text"
+						},
+						{
+							"key": "title",
+							"value": "{{title}}",
+							"type": "text"
+						},
+						{
+							"key": "tab",
+							"value": "ask",
+							"type": "text"
+						},
+						{
+							"key": "content",
+							"value": "{{content}}",
+							"type": "text"
+						}
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://39.107.96.138:3000/api/v1/topics/update",
+					"protocol": "http",
+					"host": [
+						"39",
+						"107",
+						"96",
+						"138"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"topics",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "话题详情",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "44c373bd-47af-4920-b620-66244716eea5",
+						"exec": [
+							"/*",
+							"话题详情中的标题，板块，内容应该与更改信息一致",
+							"*/",
+							"",
+							"var jsonData = pm.response.json();",
+							"",
+							"var excpet_topic_id = pm.variables.get(\"topic_id\");",
+							"var excpet_title = pm.variables.get(\"title\");",
+							"var excpet_tab = pm.variables.get(\"tab\");",
+							"var excpet_content = pm.variables.get(\"content\");",
+							"",
+							"pm.test(\"topic_id的值应该与发布话题时返回的topic_id是同一个\", function () {",
+							"",
+							"    pm.expect(jsonData[\"topic_id\"]).to.eql(excpet_topic_id);",
+							"});",
+							"",
+							"pm.test(\"title的值应该与发布话题时返回的tittle是同一个\", function () {",
+							"",
+							"    pm.expect(jsonData[\"topic_id\"]).to.eql(excpet_title);",
+							"});",
+							"",
+							"pm.test(\"tab的值应该与更新话题时tab值为同一个\", function () {",
+							"",
+							"    pm.expect(jsonData[\"tab\"]).to.eql(excpet_tab);",
+							"});",
+							"",
+							"pm.test(\"content的值应该与发布话题时返回的content是同一个\", function () {",
+							"",
+							"    pm.expect(jsonData[\"content\"]).to.eql(excpet_content);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://39.107.96.138:3000/api/v1/topic/:id?mdrender=false",
+					"protocol": "http",
+					"host": [
+						"39",
+						"107",
+						"96",
+						"138"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"topic",
+						":id"
+					],
+					"query": [
+						{
+							"key": "mdrender",
+							"value": "false"
+						}
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{topic_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "主题收藏",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "13c8362d-2d31-48ed-a9c6-62069bb4de2c",
+						"exec": [
+							"pm.test(\"主题应该收藏成功！\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData[\"success\"]).to.eql(true);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "accesstoken",
+							"value": "{{accesstoken}}",
+							"type": "text"
+						},
+						{
+							"key": "topic_id",
+							"value": "5dabd8a25675d33f74c1b216",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://39.107.96.138:3000/api/v1/topic_collect/collect",
+					"protocol": "http",
+					"host": [
+						"39",
+						"107",
+						"96",
+						"138"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"topic_collect",
+						"collect"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "用户所收藏的主题",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2cb4f5eb-a330-4bc5-8d12-57d85021c85c",
+						"exec": [
+							"const expect_id = pm.variables.get('topic_id')",
+							"",
+							"pm.test(\"收藏的话题中应该包含主题收藏id\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    const data = jsonData[\"data\"];",
+							"    let data_ids = []",
+							"    for(let d of data){",
+							"        data_ids.append(d['id'])",
+							"    }",
+							"    pm.expect(data_ids).to.include(expect_id);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://39.107.96.138:3000/api/v1/topic_collect/:loginname",
+					"protocol": "http",
+					"host": [
+						"39",
+						"107",
+						"96",
+						"138"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"topic_collect",
+						":loginname"
+					],
+					"variable": [
+						{
+							"key": "loginname",
+							"value": "testuser10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "取消收藏",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "190bde4e-9965-42e2-9924-ba4ca6865ba9",
+						"exec": [
+							"pm.test(\"主题应该取消成功！\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData[\"success\"]).to.eql(true);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "accesstoken",
+							"value": "{{accesstoken}}",
+							"type": "text"
+						},
+						{
+							"key": "topic_id",
+							"value": "5dabd8a25675d33f74c1b216",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://39.107.96.138:3000/api/v1/topic_collect/de_collect?",
+					"protocol": "http",
+					"host": [
+						"39",
+						"107",
+						"96",
+						"138"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"topic_collect",
+						"de_collect"
+					],
+					"query": [
+						{
+							"key": "accesstoken",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "新建评论",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f9d9526b-990d-45b9-97b7-ff69fcdbfe09",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"pm.test(\"评论应该创建成功！\", function () {",
+							"    pm.expect(jsonData[\"success\"]).to.eql(true);",
+							"});",
+							"",
+							"",
+							"pm.variables.set(\"reply_id\",jsonData['reply_id']);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "accesstoken",
+							"value": "{{accesstoken}}",
+							"type": "text"
+						},
+						{
+							"key": "content",
+							"value": "大苏打萨达萨达是",
+							"type": "text"
+						},
+						{
+							"key": "reply_id",
+							"value": "5dabdbc85675d33f74c1b241",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "http://39.107.96.138:3000/api/v1/topic/:topic_id/replies",
+					"protocol": "http",
+					"host": [
+						"39",
+						"107",
+						"96",
+						"138"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"topic",
+						":topic_id",
+						"replies"
+					],
+					"variable": [
+						{
+							"key": "topic_id",
+							"value": "{{topic_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "为评论点赞",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6fe765aa-9f8c-4175-8914-83e9f25191bc",
+						"exec": [
+							"pm.test(\"点赞成功！\", function () {",
+							"    pm.expect(jsonData[\"success\"]).to.eql(true);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "accesstoken",
+							"value": "{{accesstoken}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://39.107.96.138:3000/api/v1/reply/:reply_id/ups",
+					"protocol": "http",
+					"host": [
+						"39",
+						"107",
+						"96",
+						"138"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"reply",
+						":reply_id",
+						"ups"
+					],
+					"variable": [
+						{
+							"key": "reply_id",
+							"value": "{{reply_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "验证 accessToken 的正确性",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "accesstoken",
+							"value": "{{accesstoken}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://39.107.96.138:3000/api/v1/accesstoken",
+					"protocol": "http",
+					"host": [
+						"39",
+						"107",
+						"96",
+						"138"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"accesstoken"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "获取已读和未读消息",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://39.107.96.138:3000/api/v1/messages?accesstoken={{accesstoken}}",
+					"protocol": "http",
+					"host": [
+						"39",
+						"107",
+						"96",
+						"138"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"messages"
+					],
+					"query": [
+						{
+							"key": "accesstoken",
+							"value": "{{accesstoken}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "用户详情",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1aa79b7f-e27d-46bb-851d-8468142dddf6",
+						"exec": [
+							"var jsonData = pm.response.json()",
+							"var data = jsonData[\"data\"];",
+							"    ",
+							"pm.test(\"验证loginname应为 user1\",function(){",
+							"    ",
+							"    pm.expect(data[\"loginname\"]).to.eql(\"user1\");",
+							"})",
+							"",
+							"pm.test(\"recent_topics 数据中 loginname 应该都为 user1\",function(){",
+							"    var recent_topics_data = data[\"recent_topics\"]",
+							"    for(let d of recent_topics_data){",
+							"        pm.expect(d[\"author\"][\"loginname\"]).to.eql('user1')",
+							"    }",
+							"})",
+							"",
+							"",
+							"pm.test(\"recent_replies 数据中 loginname 应该都为 user1\",function(){",
+							"    var recent_replies_data = data[\"recent_replies\"]",
+							"    for(let d of recent_replies_data){",
+							"        pm.expect(d[\"author\"][\"loginname\"]).to.eql('user1')",
+							"    }",
+							"})",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://39.107.96.138:3000/api/v1/user/:loginname",
+					"protocol": "http",
+					"host": [
+						"39",
+						"107",
+						"96",
+						"138"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"user",
+						":loginname"
+					],
+					"variable": [
+						{
+							"key": "loginname",
+							"value": "user1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "获取未读消息数",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://39.107.96.138:3000/api/v1/message/count?accesstoken={{accesstoken}}",
+					"protocol": "http",
+					"host": [
+						"39",
+						"107",
+						"96",
+						"138"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"message",
+						"count"
+					],
+					"query": [
+						{
+							"key": "accesstoken",
+							"value": "{{accesstoken}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "标记全部已读",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "accesstoken",
+							"value": "{{accesstoken}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://39.107.96.138:3000/api/v1/message/mark_all",
+					"protocol": "http",
+					"host": [
+						"39",
+						"107",
+						"96",
+						"138"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"message",
+						"mark_all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "标记单个消息为已读",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "accesstoken",
+							"value": "{{accesstoken}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://39.107.96.138:3000/api/v1/message/mark_one/:msg_id",
+					"protocol": "http",
+					"host": [
+						"39",
+						"107",
+						"96",
+						"138"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"message",
+						"mark_one",
+						":msg_id"
+					],
+					"variable": [
+						{
+							"key": "msg_id",
+							"value": "5dabdf5d5675d33f74c1b27e"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

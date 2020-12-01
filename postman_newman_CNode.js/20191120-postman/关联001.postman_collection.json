@@ -1,0 +1,140 @@
+{
+	"info": {
+		"_postman_id": "d96347d7-6095-4e77-acbe-b8494ca5e26f",
+		"name": "关联001",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "{{url}}/topics新建主题",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "996a43ac-8d66-4156-aecd-a46255bbe059",
+						"exec": [
+							"pm.globals.set(\"topic_id\",pm.response.json().topic_id);",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "accesstoken",
+							"value": "188a38a0-4347-43ed-bcc0-436ae35a928d",
+							"type": "text"
+						},
+						{
+							"key": "title",
+							"value": "{{aaa}",
+							"type": "text"
+						},
+						{
+							"key": "tab",
+							"value": "ask",
+							"type": "text"
+						},
+						{
+							"key": "content",
+							"value": "{{bbb}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url}}/topics",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"topics"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "{{url}}/topics/update编辑主题",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "52c3ef1f-2013-43de-b616-d5437a9598d4",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "accesstoken",
+							"value": "188a38a0-4347-43ed-bcc0-436ae35a928d",
+							"type": "text"
+						},
+						{
+							"key": "topic_id",
+							"value": "{{topic_id}}",
+							"type": "text"
+						},
+						{
+							"key": "title",
+							"value": "dfdfddsddfdsdffghjk",
+							"type": "text"
+						},
+						{
+							"key": "tab",
+							"value": "ask",
+							"type": "text"
+						},
+						{
+							"key": "content",
+							"value": "dsdfdsdfdsdfdsdfdr",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url}}/topics/update",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"topics",
+						"update"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
